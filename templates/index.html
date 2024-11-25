@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nomophobia Stage Predictor</title>
+    <style>
+        
+      /* General styling */
+      body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #b7f0f8;
+        color: #333;
+      }
+
+      h1 {
+        text-align: center;
+        color: #444;
+        margin: 20px 0;
+      }
+
+      /* Form container */
+      form {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .question {
+        margin-bottom: 20px;
+        cursor:pointer;
+      }
+
+      label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      select {
+        width: 100%;
+        padding: 10px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      /* Button styling */
+      button {
+        width: 100%;
+        padding: 15px;
+        background-color: #4caf50;
+        color: white;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      /* Result styling */
+      #result {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        font-size: 1.1rem;
+      }
+
+      #result p {
+        margin: 10px 0;
+        font-weight: bold;
+      }
+      h1{
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Nomophobia Stage Predictor</h1>
+    <form id="nomophobiaForm">
+      <div id="questions"></div>
+      <button type="submit">Submit</button>
+    </form>
+    <div id="result" style="display: none;"></div>
+
+    <script>
+      // Generate 20 questions dynamically
+      const questions = [
+        "I would feel uncomfortable without constant access to information through my smartphone",
+        "I would be annoyed if I could not look information up on my smartphone when I wanted to do so",
+        "Being unable to get the news (e.g., happenings, weather, etc.) on my smartphone would make me nervous",
+        "I would be annoyed if I could not use my smartphone and/or its capabilities when I wanted to do so",
+        "Running out of battery in my smartphone would scare me",
+        "If I were to run out of credits or hit my monthly data limit, I would panic",
+        "If I did not have a data signal or could not connect to Wi-Fi, then I would constantly check to see if I had a signal or could find a Wi-Fi network",
+        "If I could not use my smartphone, I would be afraid of getting stranded somewhere",
+        "If I could not check my smartphone for a while, I would feel a desire to check it",
+        "If I did not have my smartphone with me, I would feel anxious because I could not instantly communicate with my family and/or friends",
+        "If I did not have my smartphone with me, I would be worried because my family and/or friends could not reach me",
+        "If I did not have my smartphone with me, I would feel nervous because I would not be able to receive text messages and calls",
+        "If I did not have my smartphone with me, I would be anxious because I could not keep in touch with my family and/or friends",
+        "If I did not have my smartphone with me, I would be nervous because I could not know if someone had tried to get a hold of me",
+        "If I did not have my smartphone with me, I would feel anxious because my constant connection to my family and friends would be broken",
+        "If I did not have my smartphone with me, I would be nervous because I would be disconnected from my online identity",
+        "If I did not have my smartphone with me, I would be uncomfortable because I could not stay up-to-date with social media and online networks",
+        "If I did not have my smartphone with me, I would feel awkward because I could not check my notifications for updates from my connections and online networks",
+        "If I did not have my smartphone with me, I would feel anxious because I could not check my email messages",
+        "If I did not have my smartphone with me, I would feel weird because I would not know what to do",
+      ];
+      const container = document.getElementById("questions");
+      questions.forEach((q, i) => {
+        const questionHTML = `
+                <div class="question">
+                    <label for="q${i + 1}">${q}</label>
+                    <select id="q${i + 1}" name="q${i + 1}" required>
+                        <option value="1">I do not agree at all</option>
+                        <option value="2">I do not agree</option>
+                        <option value="3">I agree</option>
+                        <option value="4">I agree completely</option>
+                    </select>
+                </div>`;
+        container.innerHTML += questionHTML;
+      });
+
+      // Submit form data
+      document
+        .getElementById("nomophobiaForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+          const response = await fetch("/predict", {
+            method: "POST",
+            body: formData,
+          });
+          const result = await response.json();
+          const resultDiv = document.getElementById("result");
+          resultDiv.style.display = "block"; // Show the result section
+          resultDiv.innerHTML = `
+            <p>Predicted Numerical Value: ${result.numerical_value}</p>
+            <p>Predicted Stage: ${result.stage} </p>
+          `;
+        });
+    </script>
+  </body>
+</html>
