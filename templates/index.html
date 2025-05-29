@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nomophobia Stage Predictor</title>
     <style>
-        
       /* General styling */
       body {
-        font-family: 'Arial', sans-serif;
+        font-family: "Arial", sans-serif;
         margin: 0;
         padding: 0;
         background-color: #b7f0f8;
@@ -33,7 +32,7 @@
 
       .question {
         margin-bottom: 20px;
-        cursor:pointer;
+        cursor: pointer;
       }
 
       label {
@@ -82,7 +81,7 @@
         margin: 10px 0;
         font-weight: bold;
       }
-      h1{
+      h1 {
         color: red;
       }
     </style>
@@ -93,7 +92,7 @@
       <div id="questions"></div>
       <button type="submit">Submit</button>
     </form>
-    <div id="result" style="display: none;"></div>
+    <div id="result" style="display: none"></div>
 
     <script>
       // Generate 20 questions dynamically
@@ -146,10 +145,25 @@
           });
           const result = await response.json();
           const resultDiv = document.getElementById("result");
+
+          let additionalInfo = "";
+
+        if (result.stage === 1) {
+            additionalInfo = "<p>Mild Nomophobia or Low Dependency on phone</p>";
+        } else if (result.stage === 2) {
+            additionalInfo = "<p>Moderate Nomophobia</p>";
+        } else if (result.stage === 3) {
+            additionalInfo = "<p>Severe Nomophobia Please Reduce screen time &#128517 </p>";
+        } else {
+            additionalInfo = "<p>Unknown stage</p>";
+        }
           resultDiv.style.display = "block"; // Show the result section
           resultDiv.innerHTML = `
             <p>Predicted Numerical Value: ${result.numerical_value}</p>
             <p>Predicted Stage: ${result.stage} </p>
+            <p>${additionalInfo}</p>
+
+
           `;
         });
     </script>
